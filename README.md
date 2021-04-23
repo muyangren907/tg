@@ -198,7 +198,7 @@ If two or more peers have same name, <sharp>number is appended to the name. (for
 * **safe_quit** - wait for all queries to end then quit
 
 
-
+```
 安装telegram-cli：
 git clone https://gitee.com/Jie-Qiao/tg
 sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev libjansson-dev libpython-dev lua-lgi libssl1.0-dev make
@@ -260,3 +260,4 @@ proxychains4 bin/telegram-cli -k tg-server.pub
 3
 意思是，每天凌晨1点，5点，6点分别运行一次（防止失败，多签几次）
 
+```
