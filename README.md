@@ -196,3 +196,67 @@ If two or more peers have same name, <sharp>number is appended to the name. (for
 #### Other
 * **quit** - quit
 * **safe_quit** - wait for all queries to end then quit
+
+
+
+安装telegram-cli：
+git clone https://gitee.com/Jie-Qiao/tg
+sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev libjansson-dev libpython-dev lua-lgi libssl1.0-dev make
+cd tg
+./configure
+make
+1
+2
+3
+4
+5
+安装代理软件
+如果不需要代理，那么这一步是可以跳过的，只需要在后面把proxychains4删掉就可以了
+
+# wget https://github.com/rofl0r/proxychains-ng/releases/download/v4.12/proxychains-ng-4.12.tar.xz
+tar xf  proxychains-ng-4.12.tar.xz
+cd proxychains-ng-4.12
+./configure --prefix=/usr --sysconfdir=/etc
+make
+sudo make install
+sudo make install-config
+1
+2
+3
+4
+5
+6
+7
+最后使在用 Proxychains4 进行代理前，需要修改配置文件
+sudo vim /etc/proxychains.conf
+在最下面 [ProxyList] 中添加对应的代理服务器，格式按照上方的 Example 写就可以。
+#协议 地址 端口 用户 密码
+sock5 127.0.0.1 1080
+然后我们就可以正式使用 Proxychains 了。使用方式是用 proxychains4 去运行所需要代理的命令。比如
+proxychains4 curl https://www.google.com
+
+定时运行
+首先初始化，我们需要先登录一次：
+
+proxychains4 bin/telegram-cli -k tg-server.pub
+
+如果没有意外，是会看到输入登陆的手机号和验证码，手机号记得把+86也加上去。
+
+最后登陆完后就可以退出。
+
+然后可以直接使用命令进行签到：
+
+(echo "contact_list";sleep 5;echo "msg XXXXXX /checkin"; echo "safe_quit") | proxychains4 /path/to/tg/bin/telegram-cli -k tg-server.pub -W
+
+里面的XXXXXX就是你要签到的bot的，还有/path/to/tg/就是你的路径，/checkin就是要发送的消息，填好后，我们可以设置crontab每天自动运行：
+
+输入crontab -e，然后添加：
+
+01 1 * * * (echo "contact_list";sleep 5;echo "msg XXXXXX /checkin"; echo "safe_quit") | proxychains4 /path/to/tg/bin/telegram-cli -k tg-server.pub -W
+00 6 * * * (echo "contact_list";sleep 5;echo "msg XXXXXX /checkin"; echo "safe_quit") | proxychains4 /path/to/tg/bin/telegram-cli -k tg-server.pub -W
+00 7 * * * (echo "contact_list";sleep 5;echo "msg XXXXXX /checkin"; echo "safe_quit") | proxychains4 /path/to/tg/bin/telegram-cli -k tg-server.pub -W
+1
+2
+3
+意思是，每天凌晨1点，5点，6点分别运行一次（防止失败，多签几次）
+
